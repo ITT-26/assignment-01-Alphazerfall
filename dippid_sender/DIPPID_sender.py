@@ -10,8 +10,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 counter = 0
 
 while True:
-    # message = '{"heartbeat" : ' + str(counter) + '}'
-    message_dict = {"heartbeat" : str(counter)}
+    message_dict = {"button_1" : str(counter)}
     message = json.dumps(message_dict)
 
     print(message)
