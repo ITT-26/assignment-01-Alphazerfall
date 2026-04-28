@@ -20,7 +20,7 @@ while True:
     }
 
 
-    message_dict = {"acceleration": accel, "button_1": "true"}
+    message_dict = {"accelerometer": accel, "button_1": "true"}
     message = json.dumps(message_dict)
 
     #print(message)
