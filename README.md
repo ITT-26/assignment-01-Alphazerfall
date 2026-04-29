@@ -2,20 +2,15 @@
 # DIPPID and Pyglet
 
 
-# Setup
-
-```
-python -m venv .venv
-venv\Scripts\activate (Windows) or source venv/bin/activate (Linux/Mac)
-pip install -r requirements.txt
-```
+## Setup
+Clone the repo, then `assignment-01-Alphazerfall`.
+Set up a virtual environment using`python -m venv .venv`.
+Activate the virtual environment using `venv\Scripts\activate` on Windows and `source venv/bin/activate` on Linux/Mac.
+Install the requirmenets via `pip install -r requirements.txt`
 
 
 # DIPPID Sender
-## Run
-```bash
-python dippid_sender/DIPPID_sender.py
-```
+To start the simulated sender, run `python dippid_sender/DIPPID_sender.py`.
 
 
 # Space Invaders with DIPPID
@@ -28,9 +23,5 @@ This project is inspired by https://github.com/brunotnasc/space-invaders/tree/ma
 - [sound effects](https://www.classicgaming.cc/classics/space-invaders/sounds)
 
 ## Setup
-Make sure your DIPPID device is sending data to UDP port `5700`.
+Make sure your DIPPID device is sending data to UDP port `5700`. Run via `python 2d_game/main.py`.
 
-## Run
-```bash
-python 2d_game/main.py
-```
