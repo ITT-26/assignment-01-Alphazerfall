@@ -5,7 +5,7 @@ Clone the repo, then `cd assignment-01-Alphazerfall`.
 
 Set up a virtual environment using`python -m venv .venv`.
 
-Activate the virtual environment using `venv\Scripts\activate` on Windows and `source venv/bin/activate` on Linux/Mac.
+Activate the virtual environment using `.venv\Scripts\activate` on Windows and `source .venv/bin/activate` on Linux/Mac.
 
 Install the requirmenets via `pip install -r requirements.txt`
 
@@ -18,7 +18,7 @@ A Space Invaders clone built with [pyglet](https://pyglet.org/), controlled via 
 
 Make sure your DIPPID device is sending data to UDP port `5700`.
 
-Run via `python 2d_game/main.py`.
+Navigate to the base directory of the repo. Run via `python 2d_game/main.py`.
 
 ### Assets 
 This project is inspired by https://github.com/brunotnasc/space-invaders/tree/master. Assets include:
