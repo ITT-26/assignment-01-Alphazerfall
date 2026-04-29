@@ -41,11 +41,19 @@ class Game:
 
         self.score = 0
         self.lives = 3
-        self.score_label = pyglet.text.Label(f"Score: {self.score}", font_name="Space Invaders", font_size=12, x=10, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
-        self.lives_label = pyglet.text.Label(f"Lives: {self.lives}", font_name="Space Invaders", font_size=12, x=510, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
+        self.over = False
+        self.score_label = pyglet.text.Label(f"Score: {self.score}", font_name="Space Invaders", font_size=16, x=10, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
+        self.lives_label = pyglet.text.Label(f"Lives: {self.lives}", font_name="Space Invaders", font_size=16, x=490, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
+        
+        self.gameover_batch = pyglet.graphics.Batch()
+        self.gameover_label = pyglet.text.Label(f"GAME OVER", font_name="Space Invaders", font_size=28, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 + 50, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
+        self.gameover_score_label = pyglet.text.Label(f"Score: {self.score}", font_name="Space Invaders", font_size=18, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 - 50, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
+        self.game_over_hint_label = pyglet.text.Label(f"Press Button 1 to Restart", font_name="Space Invaders", font_size=14, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 - 150, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
         self.crt = CRT(WINDOW_WIDTH, WINDOW_HEIGHT)
 
     def update(self, dt):
+        if self.over:
+            return
         self.player.update(dt)
         self.move_aliens()
         self.handle_shooting()
@@ -57,12 +65,15 @@ class Game:
         self.tick += 1
 
     def draw(self):
-        self.player.sprite.draw()
-        self.aliens_batch.draw()
-        self.obstacles_batch.draw()
-        self.lasers_batch.draw()
-        self.explosions_batch.draw()
-        self.labels_batch.draw()
+        if self.over:
+            self.gameover_batch.draw()
+        else:
+            self.player.sprite.draw()
+            self.aliens_batch.draw()
+            self.obstacles_batch.draw()
+            self.lasers_batch.draw()
+            self.explosions_batch.draw()
+            self.labels_batch.draw()
         self.crt.draw()
 
     def spawn_aliens(self):
@@ -134,9 +145,9 @@ class Game:
     
     def hit_player(self):
         self.spawn_explosion(self.player.sprite.x, self.player.sprite.y, self.player)
+        EXPLOSION_SOUND.play()
         self.lives -= 1
         if self.lives <= 0:
-            self.player.sprite.delete()  # remove player sprite on death
             self.game_over()
     
     def hit_obstacle(self, obstacle):
@@ -147,8 +158,8 @@ class Game:
             self.spawn_explosion(obstacle.sprite.x, obstacle.sprite.y, obstacle)
     
     def game_over(self):
-        print("Game Over! Final Score:", self.score)
-        pyglet.app.exit()
+        self.over = True
+        self.gameover_score_label.text = f"Score: {self.score}"
 
     def _new_layer(self):
         return [], pyglet.graphics.Batch()
@@ -197,10 +208,10 @@ class Obstacle:
         self.health = 30
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load(str(SPRITE_PATH / "space__0008_ShieldFull.png")), x=x, y=y, batch=sprite_batch)
         self.sprite.color = (0, 255, 0)
-        self.health_label = pyglet.text.Label(str(self.health), font_name="Space Invaders", font_size=12, x=x + 12, y=y + 12, color=(50, 50, 50), batch=labels_batch)
+        self.health_label = pyglet.text.Label(f"{self.health:02d}", font_name="Space Invaders", font_size=12, x=x + 12, y=y + 12, color=(50, 50, 50), batch=labels_batch)
 
     def refresh_health_label(self):
-        self.health_label.text = str(self.health)
+        self.health_label.text = f"{self.health:02d}"
 
 
 class Laser:
@@ -267,6 +278,12 @@ if __name__ == '__main__':
     pyglet.gl.glClearColor(50/255, 50/255, 50/255, 1.0)
     game = Game()
 
+    def update(dt):
+        global game
+        game.update(dt)
+        if game.over and sensor.get_value("button_1"):
+            game = Game()  # reset game
+
     @win.event
     def on_key_press(symbol, modifiers):
         if symbol == pyglet.window.key.Q:
@@ -277,6 +294,6 @@ if __name__ == '__main__':
         win.clear()
         game.draw()
 
-    pyglet.clock.schedule_interval(game.update, 1/60.0)  # 60 FPS
+    pyglet.clock.schedule_interval(update, 1/60.0)  # 60 FPS
     pyglet.app.run()
 

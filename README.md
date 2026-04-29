@@ -3,14 +3,14 @@
 ## Setup
 Clone the repo, then `cd assignment-01-Alphazerfall`.
 
-Set up a virtual environment using`python -m venv .venv`.
+The same virtual environment is used for both exercises. Set it up using `python -m venv .venv`.
 
 Activate the virtual environment using `.venv\Scripts\activate` on Windows and `source .venv/bin/activate` on Linux/Mac.
 
-Install the requirmenets via `pip install -r requirements.txt`
+Install the required dependencies via `pip install -r requirements.txt`
 
 ## DIPPID Sender
-To start the simulated sender, run `python dippid_sender/DIPPID_sender.py`.
+To start the simulated DIPPID sender, run `python dippid_sender/DIPPID_sender.py`.
 
 
 ## Space Invaders with DIPPID
