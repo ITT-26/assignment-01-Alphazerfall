@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import signal
 import pyglet
 from pyglet import window, shapes
 from pathlib import Path
@@ -13,11 +14,12 @@ WINDOW_HEIGHT = 600
 ALIEN_TICKRATE_START = 60
 PLAYER_SHOOT_COOLDOWN = 0.3
 
-SPRITE_PATH = Path("2d_game/assets/sprites/invaders")
-AUDIO_PATH = Path("2d_game/assets/audio")
-SHOOT_SOUND = pyglet.media.load(str(AUDIO_PATH / "shoot.wav"), streaming=False)
+SPRITE_PATH = Path("assets/sprites/invaders")
+AUDIO_PATH = Path("assets/audio")
 EXPLOSION_SOUND = pyglet.media.load(str(AUDIO_PATH / "explosion.wav"), streaming=False)
-pyglet.font.add_file(r".\2d_game\assets\fonts\space_invaders.ttf")
+INVADERKILLED_SOUND = pyglet.media.load(str(AUDIO_PATH / "invaderkilled.wav"), streaming=False)
+SHOOT_SOUND = pyglet.media.load(str(AUDIO_PATH / "shoot.wav"), streaming=False)
+pyglet.font.add_file(r".\assets\fonts\space_invaders.ttf")
 
 
 class Game:
@@ -121,6 +123,7 @@ class Game:
 
     def kill_alien(self, alien):
         self.spawn_explosion(alien.sprite.x, alien.sprite.y, alien)
+        INVADERKILLED_SOUND.play()
         self.aliens.remove(alien)
         self.score += alien.point_value
         self.alien_tickrate = max(10, self.alien_tickrate - 2) # increase speed as aliens are killed
@@ -227,7 +230,7 @@ class Explosion:
         else:
             self.sprite = pyglet.sprite.Sprite(pyglet.image.load(str(SPRITE_PATH / "space__0009_EnemyExplosion.png")), x=x, y=y, batch=batch)
         self.lifetime = 0.5  # explosion lasts for 0.5 seconds
-        EXPLOSION_SOUND.play()
+        #EXPLOSION_SOUND.play()
 
     def update(self, dt):
         self.lifetime -= dt
@@ -238,7 +241,7 @@ class Explosion:
 class CRT:
     # CRT shader effect based on https://github.com/clear-code-projects/Space-invaders
     def __init__(self, width, height):    
-        image = pyglet.image.load("2d_game/assets/sprites/tv.png")
+        image = pyglet.image.load("assets/sprites/tv.png")
         self.tv = pyglet.sprite.Sprite(image)
         self.tv.color = (255, 255, 255)
         
@@ -259,6 +262,7 @@ class CRT:
 
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     win = window.Window(WINDOW_WIDTH, WINDOW_HEIGHT, caption="Space Invaders", resizable=False)
     pyglet.gl.glClearColor(50/255, 50/255, 50/255, 1.0)
     game = Game()
