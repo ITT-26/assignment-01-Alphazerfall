@@ -55,8 +55,7 @@ class Visualizer:
          
         self.plots = {
             'accelerometer': Plotter("Accelerometer", (-2, 2)),
-            'gyroscope': Plotter("Gyroscope", (-5, 5)),
-            'gravity': Plotter("Gravity", (-10, 10)),
+            'button_1':      Plotter("Button 1", (-0.2, 1.2)),
         }
         
         # add plots to the main window
@@ -76,7 +75,10 @@ class Visualizer:
         # get latest data from sensor and update plots:
         for capability, plot in self.plots.items():
             if self.sensor.has_capability(capability):
-                plot.update(self.sensor.get_value(capability))
+                value = self.sensor.get_value(capability)
+            if capability == 'button_1':
+                value = {'x': value, 'y': value, 'z': value}
+            plot.update(value)
 
 
     def close_event(self, e):

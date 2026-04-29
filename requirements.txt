@@ -1,5 +1,5 @@
 colorama==0.4.6
-numpy==2.4.4
+numpy==2.2.6
 pyglet==2.1.14
 PyQt6==6.11.0
 PyQt6-Qt6==6.11.0
