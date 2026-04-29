@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import random
 import signal
@@ -27,28 +29,22 @@ class Game:
         self.tick = 0
         self.alien_tickrate = ALIEN_TICKRATE_START
         self.alien_direction = 1
+        self.score = 0
+        self.lives = 3
+        self.over = False
 
         self.player = Player(300, 20)
+
+        self.setup_labels()
 
         self.aliens, self.aliens_batch = self._new_layer()
         self.obstacles, self.obstacles_batch = self._new_layer()
         self.lasers, self.lasers_batch = self._new_layer()
         self.explosions, self.explosions_batch = self._new_layer()
-        self.labels, self.labels_batch = self._new_layer()
 
         self.spawn_aliens()
         self.spawn_obstacles()
 
-        self.score = 0
-        self.lives = 3
-        self.over = False
-        self.score_label = pyglet.text.Label(f"Score: {self.score}", font_name="Space Invaders", font_size=16, x=10, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
-        self.lives_label = pyglet.text.Label(f"Lives: {self.lives}", font_name="Space Invaders", font_size=16, x=490, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
-        
-        self.gameover_batch = pyglet.graphics.Batch()
-        self.gameover_label = pyglet.text.Label(f"GAME OVER", font_name="Space Invaders", font_size=28, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 + 50, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
-        self.gameover_score_label = pyglet.text.Label(f"Score: {self.score}", font_name="Space Invaders", font_size=18, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 - 50, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
-        self.game_over_hint_label = pyglet.text.Label(f"Press Button 1 to Restart", font_name="Space Invaders", font_size=14, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 - 150, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
         self.crt = CRT(WINDOW_WIDTH, WINDOW_HEIGHT)
 
     def update(self, dt):
@@ -75,6 +71,17 @@ class Game:
             self.explosions_batch.draw()
             self.labels_batch.draw()
         self.crt.draw()
+
+    def setup_labels(self):
+        self.labels, self.labels_batch = self._new_layer()
+        self.score_label = pyglet.text.Label(f"Score: {self.score}", font_name="Space Invaders", font_size=16, x=10, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
+        self.lives_label = pyglet.text.Label(f"Lives: {self.lives}", font_name="Space Invaders", font_size=16, x=490, y=WINDOW_HEIGHT - 30, batch=self.labels_batch)
+        
+        self.gameover_batch = pyglet.graphics.Batch()
+        self.gameover_label = pyglet.text.Label(f"GAME OVER", font_name="Space Invaders", font_size=28, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 + 50, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
+        self.gameover_score_label = pyglet.text.Label(f"Score: {self.score}", font_name="Space Invaders", font_size=18, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 - 50, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
+        self.game_over_hint_label = pyglet.text.Label(f"Press Button 1 to Restart", font_name="Space Invaders", font_size=14, x=WINDOW_WIDTH // 2, y=WINDOW_HEIGHT // 2 - 150, anchor_x="center", anchor_y="center", batch=self.gameover_batch)
+        
 
     def spawn_aliens(self):
         rows = [("space__0000_A1.png", "space__0001_A2.png", 30, 0)] \
@@ -288,6 +295,7 @@ if __name__ == '__main__':
     def on_key_press(symbol, modifiers):
         if symbol == pyglet.window.key.Q:
             pyglet.app.exit()
+            sys.exit(0)
 
     @win.event
     def on_draw():
